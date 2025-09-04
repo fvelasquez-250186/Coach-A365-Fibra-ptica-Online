@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h1 class="h4 mb-4">Acceder</h1>
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">DNI</label>
+            <input name="dni" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Contraseña</label>
+            <input name="password" type="password" class="form-control" required>
+            <div class="form-text">Por ahora, la contraseña es igual al DNI.</div>
+          </div>
+          <button class="btn btn-primary w-100">Ingresar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

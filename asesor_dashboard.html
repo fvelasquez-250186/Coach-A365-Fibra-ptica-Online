@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="impact-title mb-4">Panel del Asesor</h1>
+
+<form class="card p-3 mb-4" method="POST" action="{{ url_for('advisor_email_update') }}">
+  <div class="row g-3">
+    <div class="col-md-4">
+      <label class="form-label">Asesor</label>
+      <select name="advisor" class="form-select" required>
+        {% for a in advisors %}
+          {% set name = a.asesor or a.advisor or a.nombre %}
+          <option value="{{ name|e }}">{{ name|e }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Correo del asesor</label>
+      <input name="email" type="email" class="form-control" placeholder="asesor@empresa.com" required>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+      <button class="btn btn-dark w-100">Guardar</button>
+    </div>
+  </div>
+  <div class="form-text">Este correo recibirá el detalle 3/6/8 cuando presiones “Confirmar”.</div>
+</form>
+
+<div class="card p-3 mb-4">
+  <h5 class="mb-3">Mis auditorías</h5>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Campaña</th>
+          <th>TIPIFICACIÓN</th>
+          <th>Audio</th>
+          <th>Detalle 3/6/8</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody id="audits-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card p-3">
+  <h5 class="mb-3">Resumen semanal IA</h5>
+  <p>Puedes descargar el último resumen semanal aquí (si existe):</p>
+  <a class="btn btn-outline-secondary" href="/resumen_semanal.txt" download>Descargar resumen</a>
+</div>
+
+<script>
+  const AUDITS_URL = "{{ url_for('api_audits') }}";
+
+  // Escapar HTML (evita XSS)
+  function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  // Formatear fecha con tolerancia (soporta "YYYY-MM-DD HH:MM")
+  function fmtDate(val){
+    if(!val) return '';
+    let d = new Date(val);
+    if (isNaN(d.getTime())) d = new Date(String(val).replace(' ', 'T'));
+    return isNaN(d.getTime()) ? String(val) : d.toLocaleString();
+  }
+
+  // Feedback seguro con **negritas** y saltos de línea
+  function feedbackHTML(raw){
+    const safe = esc(raw || '');
+    return safe.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  }
+
+  async function loadMyAudits(){
+    const body = document.getElementById("audits-body");
+    try{
+      const r = await fetch(AUDITS_URL);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const data = await r.json();
+
+      if (!Array.isArray(data) || data.length === 0){
+        body.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Sin registros</td></tr>';
+        return;
+      }
+
+      body.innerHTML = data.map(a=>{
+        const created = a.created_at || a.fecha || a.fecha_subida || '';
+        const camp    = a.campaign || a.campana || a['campaña'] || '';
+        const tip     = a.tipificacion || a.tip || '';
+        const audioUrl= a.audio_url || a.url || '';
+        const id      = a.id;
+        const confirmed = (a.advisor_confirmed === true || a.confirmado === true);
+        const fbHTML  = feedbackHTML(a.detail_3_6_8 || a.feedback || a.resumen || '');
+
+        const audioCell = audioUrl
+          ? `<audio controls controlsList="nodownload noremoteplayback" oncontextmenu="return false" style="width:180px;">
+               <source src="${encodeURI(audioUrl)}">
+             </audio>`
+          : '<span class="text-muted">Sin audio</span>';
+
+        const btnClass = confirmed ? 'btn-success' : 'btn-primary';
+        const btnText  = confirmed ? 'Confirmado' : 'Confirmar';
+        const disabled = confirmed ? 'disabled' : '';
+
+        return `
+          <tr>
+            <td>${esc(fmtDate(created))}</td>
+            <td>${esc(camp)}</td>
+            <td>${esc(tip)}</td>
+            <td>${audioCell}</td>
+            <td style="max-width:360px;">${fbHTML}</td>
+            <td>
+              <form method="POST" action="/advisor/confirm/${encodeURIComponent(id)}">
+                <button class="btn btn-sm ${btnClass}" ${disabled}>${btnText}</button>
+              </form>
+            </td>
+          </tr>`;
+      }).join('');
+    } catch (e){
+      body.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error cargando auditorías</td></tr>';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadMyAudits);
+</script>
+{% endblock %}
