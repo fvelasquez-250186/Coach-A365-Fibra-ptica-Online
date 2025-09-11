@@ -400,41 +400,33 @@ def transcribe_audio_gemini(audio_path: Path) -> str:
         raise RuntimeError("Gemini devolvió transcripción vacía.")
     return text
 
-COACHING_PROMPT = """
-Eres el asistente del COACH A365 FIBRA ÓPTICA ENTEL.
-A partir de la TRANSCRIPCIÓN, devuelve EXCLUSIVAMENTE estos bloques con este formato exacto:
+PROMPT_A365 = f"""
+Eres el COACH A365 para Fibra Óptica Entel Chile. 
+Tarea: a partir de la TRANSCRIPCIÓN (abajo), la TIPIFICACIÓN («{tipificacion_grouped}») y la CAMPAÑA («{campaign}»),
+devuelve SOLO las secciones 3), 4) y 6) en el FORMATO EXACTO que sigue. 
+No agregues portada, intro ni conclusiones. Escribe en español (Chile). Mantén negritas, numeración y viñetas.
 
-3) Contexto y Resultado Detallado:
-(Escribe 4–8 oraciones en un único bloque en prosa. Sé específico según la transcripción: motivo, validaciones,
-acciones del agente y resultado real de la llamada —por ejemplo, venta concretada o derivación—).
+**3) Contexto y Resultado Detallado:**
+- Resume en 3–5 líneas qué ocurrió en la llamada (quién llamó, motivo principal, objeciones si las hubo, gestión del agente).
+- Cierra con el resultado concreto de la interacción (venta/derivación/no continúa/pendiente), sin inventar datos.
 
-6) Recomendaciones Estratégicas y Ejemplos de Guion (Acción Inmediata):
-1. Guion Mejorado para Solicitar la Dirección y Justificar la Factibilidad:
-• Agente: "<frase completa para pedir dirección y justificar factibilidad>"
-• Al pedir el RUT: "<frase completa para pedir RUT y explicar su uso>"
+**4) Oportunidades de Mejora (Acción de corto plazo):**
+- Lista 3 a 5 bullets concretos y accionables, enfocados en próximos intentos de venta o reconducción.
+- Cada bullet inicia con un verbo en infinitivo (p. ej., “Validar…”, “Profundizar…”, “Ofrecer…”).
 
+**6) Recomendaciones Estratégicas y Ejemplos de Guion (Acción Inmediata):**
+1. Guion de Pivote y Consulta de Factibilidad Inmediata:
+   - Agente: «frase de ejemplo breve y natural para pedir dirección y validar factibilidad».
 2. Estrategia para Generar Confianza al Pedir Datos (Refuerzo):
-• Agente: "<frase de refuerzo de confidencialidad y propósito de los datos>"
-• Tono de Voz: "Calmado, profesional y cercano; justificar valor y beneficios"
-
-3. Profundizar en el Sondeo con Preguntas Abiertas sobre "Dolores":
-• Agente: "<pregunta abierta 1 alineada a dolor (velocidad/estabilidad/precio/streaming/teletrabajo)>"
-• Agente: "<pregunta abierta 2 alineada a dolor>"
-
-REGLAS DE FORMATO:
-- Escribe los títulos exactamente como arriba (incluye los números y el texto).
-- Mantén cada viñeta en su propia línea comenzando con "• ".
-- Incluye las etiquetas “Agente:” y “Al pedir el RUT:” y “Tono de Voz:” tal cual se ve arriba.
-- No agregues otros apartados, notas o texto fuera de 3) y 6).
-- Escribe en español neutro, orientado a ventas de Fibra Óptica Entel.
-
-DATOS CONTEXTO:
-- Tipificación: {{TIPIFICACION}}
-- Campaña: {{CAMPANIA}}
+   - Agente: «frase de ejemplo breve y natural para pedir RUT / datos con confidencialidad».
+   - Tono de Voz: «indicaciones cortas (profesional, cercano, seguro)».
+3. Profundizar en el Sondeo con Preguntas Abiertas sobre “Dolores”:
+   - Agente: «2–3 preguntas abiertas que descubran necesidad/velocidad/precio/servicio actual».
 
 TRANSCRIPCIÓN:
-{{TRANSCRIPCION}}
+{transcript}
 """
+
 
 def _cleanup_to_a365(text: str) -> str:
     t = (text or "").strip()
