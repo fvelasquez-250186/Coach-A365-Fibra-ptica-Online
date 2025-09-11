@@ -400,9 +400,9 @@ def transcribe_audio_gemini(audio_path: Path) -> str:
         raise RuntimeError("Gemini devolvió transcripción vacía.")
     return text
 
-PROMPT_A365 = f"""
+COACHING_PROMPT = """
 Eres el COACH A365 para Fibra Óptica Entel Chile. 
-Tarea: a partir de la TRANSCRIPCIÓN (abajo), la TIPIFICACIÓN («{tipificacion_grouped}») y la CAMPAÑA («{campaign}»),
+Tarea: a partir de la TRANSCRIPCIÓN (abajo), la TIPIFICACIÓN («{{TIPIFICACION}}») y la CAMPAÑA («{{CAMPANIA}}»),
 devuelve SOLO las secciones 3), 4) y 6) en el FORMATO EXACTO que sigue. 
 No agregues portada, intro ni conclusiones. Escribe en español (Chile). Mantén negritas, numeración y viñetas.
 
@@ -423,8 +423,12 @@ No agregues portada, intro ni conclusiones. Escribe en español (Chile). Mantén
 3. Profundizar en el Sondeo con Preguntas Abiertas sobre “Dolores”:
    - Agente: «2–3 preguntas abiertas que descubran necesidad/velocidad/precio/servicio actual».
 
+DATOS CONTEXTO:
+- Tipificación: {{TIPIFICACION}}
+- Campaña: {{CAMPANIA}}
+
 TRANSCRIPCIÓN:
-{transcript}
+{{TRANSCRIPCION}}
 """
 
 
