@@ -457,13 +457,13 @@ model = genai.GenerativeModel(
         temperature=1,
         max_output_tokens=512,
     ),
+)
 
 resp = model.generate_content(prompt)
 raw = (getattr(resp, "text", "") or "").strip()
 if not raw:
     raise RuntimeError("Gemini devolvió coaching vacío.")
 return _cleanup_to_a365(raw)
-
 
 # ========================= SUBIDA / SERVICIOS =========================
 @app.route("/upload", methods=["POST"])
