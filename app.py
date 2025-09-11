@@ -457,7 +457,6 @@ model = genai.GenerativeModel(
         temperature=1,
         max_output_tokens=512,
     ),
-)
 
 resp = model.generate_content(prompt)
 raw = (getattr(resp, "text", "") or "").strip()
