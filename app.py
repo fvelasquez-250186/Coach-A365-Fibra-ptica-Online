@@ -457,9 +457,18 @@ def generate_coaching_from_prompt(transcript: str, tipificacion: str, campaign: 
     model = genai.GenerativeModel("gemini-1.5-flash")
     resp = model.generate_content(prompt, safety_settings=None)
 
-    raw = (getattr(resp, "text", "") or "").strip()
-    if not raw:
-        raise RuntimeError("Gemini no devolvió contenido en la respuesta.")
+raw = ""
+for c in getattr(resp, "candidates", []) or []:
+    content = getattr(c, "content", None)
+    parts = getattr(content, "parts", None) or []
+    txt = "".join((getattr(p, "text", "") or "") for p in parts).strip()
+    if txt:
+        raw = txt
+        break
+
+if not raw:
+    raise RuntimeError("Gemini respondió sin contenido utilizable (parts vacíos).")
+
 
     return _cleanup_to_a365(raw)
 
