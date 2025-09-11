@@ -453,10 +453,12 @@ def generate_coaching_from_prompt(transcript: str, tipificacion: str, campaign: 
 
 model = genai.GenerativeModel(
     "gemini-2.5-pro",
-    generation_config=genai.types.GenerationConfig(temperature=1)
+    generation_config=genai.types.GenerationConfig(
+        temperature=1,
+        max_output_tokens=512
+    )
 )
 
-    )
     resp = model.generate_content(prompt)
     raw = (getattr(resp, "text", "") or "").strip()
     if not raw:
