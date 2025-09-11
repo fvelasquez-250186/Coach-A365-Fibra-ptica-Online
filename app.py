@@ -436,11 +436,20 @@ def _cleanup_to_a365(text: str) -> str:
     return t
 
 def generate_coaching_from_prompt(transcript: str, tipificacion: str, campaign: str) -> str:
+    """Genera CALCO del Coach A365 (sin fallback). Si falla, se lanza error claro."""
+    if not (genai and _GEMINI_KEY):
+        raise RuntimeError("Gemini no está configurado. Revisa GEMINI_API_KEY.")
+
+    trans = (transcript or "").strip()
+    if not trans:
+        raise RuntimeError("Transcripción vacía. No se puede generar coaching.")
+
     prompt = (
         COACHING_PROMPT
         .replace("{{TIPIFICACION}}", tipificacion or "No especificada")
-        .replace("{{CAMPAÑA}}", campaign or "No especificada")
-        .replace("{{TRANSCRIPCION}}", transcript or "")
+        .replace("{{CAMPANIA}}", campaign or "No especificada")
+        .replace("{{CAMPAÑA}}", campaign or "No especificada")  # por si el prompt usa Ñ
+        .replace("{{TRANSCRIPCION}}", trans)
     )
 
     model = genai.GenerativeModel(
@@ -448,8 +457,6 @@ def generate_coaching_from_prompt(transcript: str, tipificacion: str, campaign: 
         generation_config=genai.types.GenerationConfig(
             temperature=1,
             max_output_tokens=512,
-            top_k=40,
-            top_p=0.9,
         ),
     )
 
