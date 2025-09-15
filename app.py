@@ -493,10 +493,10 @@ resp = model.generate_content(prompt, safety_settings=None)
             raw = txt
             break
 
-    if not raw:
-        raise RuntimeError("Gemini respondió sin contenido utilizable (parts vacíos).")
+if not raw:
+    raise RuntimeError("Gemini respondió sin contenido utilizable (parts vacíos).")
 
-    return raw
+return _cleanup_to_a365(raw)
 
 # ========================= SUBIDA / SERVICIOS =========================
 @app.route("/upload", methods=["POST"])
