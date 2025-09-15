@@ -401,22 +401,25 @@ def transcribe_audio_gemini(audio_path: Path) -> str:
     return text
 
 COACHING_PROMPT = """
-Eres el COACH A365 para Fibra Óptica Entel Chile. 
+Eres el COACH A365 para Fibra Óptica Entel Chile.
 Tarea: a partir de la TRANSCRIPCIÓN (abajo), la TIPIFICACIÓN («{{TIPIFICACION}}») y la CAMPAÑA («{{CAMPANIA}}»),
-devuelve SOLO el contenido dentro de estas secciones ya escritas. 
-No cambies los títulos, no inventes nuevas secciones, no elimines nada. 
+devuelve SOLO el contenido dentro de estas secciones ya escritas.
+No cambies los títulos, no inventes nuevas secciones, no elimines nada.
+No inventes datos que no estén en la transcripción. Usa frases breves, concretas y en viñetas cuando corresponda.
 Solo completa debajo de cada encabezado.
 
 **3) Contexto y Resultado Detallado:**
-(Escribe aquí 4–6 oraciones con el resumen de la llamada y el resultado concreto. No inventes datos que no estén en la transcripción).
+(Escribe 4–6 oraciones con el resumen de la llamada y el resultado concreto. No inventes datos.)
 
 **4) Análisis Táctico Detallado de la Interacción (Foco en Factibilidad y Conversión):**
-(Completa cada subapartado con 1–3 líneas específicas de la transcripción.)
+(Completa cada subapartado con 1–3 líneas específicas tomadas de la transcripción.)
 
 - Punto Crítico: Consulta de Factibilidad:
   o Momento y Justificación:
   o Manejo de la Reticencia:
   o Observaciones del Audio (Tono/Ritmo):
+    • Tono de Voz del Agente:
+    • Tono de Voz del Cliente:
 
 - Sondeo para Necesidad de Fibra:
   o
@@ -434,7 +437,7 @@ Solo completa debajo de cada encabezado.
   o
 
 **6) Recomendaciones Estratégicas y Ejemplos de Guion (Acción Inmediata):**
-(Escribe aquí guiones y ejemplos listos para usar. Incluye subtítulos:
+(Escribe guiones y ejemplos listos para usar. Incluye subtítulos:
 1. Guion de Pivote y Consulta de Factibilidad Inmediata
 2. Estrategia para Generar Confianza al Pedir Datos (Refuerzo)
 3. Profundizar en el Sondeo con Preguntas Abiertas sobre “Dolores”
@@ -447,8 +450,6 @@ DATOS CONTEXTO:
 TRANSCRIPCIÓN:
 {{TRANSCRIPCION}}
 """
-
-
 
 def _cleanup_to_a365(text: str) -> str:
     t = (text or "").strip()
