@@ -472,8 +472,16 @@ def generate_coaching_from_prompt(transcript: str, tipificacion: str, campaign: 
         .replace("{{TRANSCRIPCION}}", trans)
     )
 
-    model = genai.GenerativeModel("gemini-1.5-pro")
-    resp = model.generate_content(prompt, safety_settings=None)
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-pro",
+    generation_config={
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 64,
+        "max_output_tokens": 2048,
+    }
+)
+resp = model.generate_content(prompt, safety_settings=None)
 
     # Extrae texto desde candidates/parts (sin fallback)
     raw = ""
