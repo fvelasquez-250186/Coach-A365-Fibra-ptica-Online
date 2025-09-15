@@ -486,7 +486,7 @@ model = genai.GenerativeModel(
         "max_output_tokens": 4096,
     }
 )
-    resp = model.generate_content(prompt, safety_settings=None)
+resp = model.generate_content(prompt, safety_settings=None)
 
     # Extrae texto desde candidates/parts (sin fallback)
     raw = ""
