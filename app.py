@@ -472,7 +472,7 @@ def generate_coaching_from_prompt(transcript: str, tipificacion: str, campaign: 
         .replace("{{TRANSCRIPCION}}", trans)
     )
 
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-1.5-pro")
     resp = model.generate_content(prompt, safety_settings=None)
 
     # Extrae texto desde candidates/parts (sin fallback)
