@@ -195,28 +195,41 @@
     const text = String(raw||'');
     const lines = text.split(/\r?\n/);
     let html = '', inList = false;
+
+    const esc = s => String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;'}[m]));
+    const boldMD = s => s.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
     const openList = ()=>{ if(!inList){ html += '<ul>'; inList = true; } };
     const closeList = ()=>{ if(inList){ html += '</ul>'; inList = false; } };
 
     for (let line of lines){
       line = line.trim();
-      if (!line){ continue; }
+      if (!line) continue;
 
+      // Encabezados 3), 4) y 6)
       if (/^3\)\s*Contexto y Resultado Detallado:/i.test(line)){
         closeList(); html += '<h6>3) Contexto y Resultado Detallado</h6>'; continue;
+      }
+      if (/^4\)\s*Análisis Táctico Detallado/i.test(line)){
+        closeList(); html += '<h6>4) Análisis Táctico Detallado de la Interacción (Foco en Factibilidad y Conversión)</h6>'; continue;
       }
       if (/^6\)\s*Recomendaciones/i.test(line)){
         closeList(); html += '<h6>6) Recomendaciones Estratégicas y Ejemplos de Guion (Acción Inmediata)</h6>'; continue;
       }
 
-      if (/^[•\-]\s*/.test(line)){
+      // Viñetas: •, -, o  (el A365 suele usar "o " en los subapartados del 4)
+      if (/^(?:[•\-]|o)\s+/.test(line)){
         openList();
-        let li = line.replace(/^[•\-]\s*/, '');
-        li = li.replace(/\b(Agente:|Al pedir el RUT:|Tono de Voz:)/g,'<span class="tag">$1</span>');
+        let li = line.replace(/^(?:[•\-]|o)\s+/, '');
+        li = esc(li);
+        li = boldMD(li);
+        li = li.replace(/\b(Punto Crítico:|Sondeo para Necesidad de Fibra:|Presentación de Valor de Fibra:|Manejo de Objeciones:|Cierre y Programación de Instalación:|Oportunidades Perdidas:|Momento y Justificación:|Manejo de la Reticencia:|Observaciones del Audio \(Tono\/Ritmo\):)/g,'<span class="tag">$1</span>');
         html += '<li>'+li+'</li>';
         continue;
       }
-      closeList(); html += '<p class="mb-2">'+esc(line)+'</p>';
+
+      // Párrafos normales (con **negritas**)
+      closeList();
+      html += '<p class="mb-2">'+ boldMD(esc(line)) +'</p>';
     }
     closeList();
     return html || '<p class="text-muted">Sin contenido.</p>';
