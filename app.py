@@ -382,15 +382,15 @@ def transcribe_audio_gemini(audio_path: Path) -> str:
         raise RuntimeError("Gemini no está configurado. Revisa GEMINI_API_KEY.")
     b64 = base64.b64encode(audio_path.read_bytes()).decode("ascii")
     mime = _mime_for(audio_path)
-    model = genai.GenerativeModel(
-        model_name="gemini-1.5-pro",
-        generation_config={
-            "temperature": 0.2,
-            "top_p": 0.9,
-            "top_k": 40,
-            "max_output_tokens": 2048,
-        }
-    )
+model = genai.GenerativeModel(
+    model_name="gemini-2.5-pro",
+    generation_config={
+        "temperature": 0.1,
+        "top_p": 0.9,
+        "top_k": 40,
+        "max_output_tokens": 8192,
+    }
+)
     resp = model.generate_content([
         {"text": "Transcribe en español (latino) con buena puntuación. Devuelve SOLO el texto, sin etiquetas."},
         {"inline_data": {"mime_type": mime, "data": b64}}
