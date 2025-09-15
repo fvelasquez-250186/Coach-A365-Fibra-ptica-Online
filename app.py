@@ -410,8 +410,28 @@ Solo completa debajo de cada encabezado.
 **3) Contexto y Resultado Detallado:**
 (Escribe aquí 4–6 oraciones con el resumen de la llamada y el resultado concreto. No inventes datos que no estén en la transcripción).
 
-**4) Oportunidades de Mejora (Acción de corto plazo):**
-(Escribe aquí 3–5 bullets con mejoras concretas y accionables. Cada bullet empieza con un verbo en infinitivo, ej. “Validar…”, “Ofrecer…”, “Profundizar…”).
+**4) Análisis Táctico Detallado de la Interacción (Foco en Factibilidad y Conversión):**
+(Completa cada subapartado con 1–3 líneas específicas de la transcripción.)
+
+- Punto Crítico: Consulta de Factibilidad:
+  o Momento y Justificación:
+  o Manejo de la Reticencia:
+  o Observaciones del Audio (Tono/Ritmo):
+
+- Sondeo para Necesidad de Fibra:
+  o
+
+- Presentación de Valor de Fibra:
+  o
+
+- Manejo de Objeciones:
+  o
+
+- Cierre y Programación de Instalación:
+  o
+
+- Oportunidades Perdidas:
+  o
 
 **6) Recomendaciones Estratégicas y Ejemplos de Guion (Acción Inmediata):**
 (Escribe aquí guiones y ejemplos listos para usar. Incluye subtítulos:
