@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
 import os, re, csv, json, sqlite3, base64, mimetypes
 from functools import wraps
 from datetime import datetime
@@ -478,7 +478,7 @@ model = genai.GenerativeModel(
         "temperature": 1.0,
         "top_p": 0.95,
         "top_k": 64,
-        "max_output_tokens": 2048,
+        "max_output_tokens": 4096,
     }
 )
 resp = model.generate_content(prompt, safety_settings=None)
