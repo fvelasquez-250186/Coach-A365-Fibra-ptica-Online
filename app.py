@@ -544,7 +544,7 @@ def upload():
                             audio_url, detail_3_6_8, advisor_confirmed, uploaded_by)
         VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)
     """, (
-        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        now_pe().strftime("%Y-%m-%d %H:%M:%S"),
         advisor, campaign, mobile, tipificacion_grouped,
         audio_url, detail_3_6_8, uploaded_by
     ))
@@ -603,7 +603,7 @@ def export_supervisor():
     rows = [dict(r) for r in cur.fetchall()]; conn.close()
 
     # Filtra por mes actual
-    now = datetime.now(); ym = f"{now.year}-{str(now.month).zfill(2)}"
+    now = now_pe(); ym = f"{now.year}-{str(now.month).zfill(2)}"
     rows = [r for r in rows if (r.get("created_at") or "").startswith(ym)]
     if not rows:
         rows = [{
