@@ -477,15 +477,15 @@ def generate_coaching_from_prompt(transcript: str, tipificacion: str, campaign: 
         .replace("{{TRANSCRIPCION}}", trans)
     )
 
-model = genai.GenerativeModel(
-    model_name="gemini-2.5-pro",
-    generation_config={
-        "temperature": 1.0,
-        "top_p": 0.95,
-        "top_k": 64,
-        "max_output_tokens": 4096,
-    }
-)
+    model = genai.GenerativeModel(
+        model_name="gemini-2.5-pro",
+        generation_config={
+            "temperature": 0.1,
+            "top_p": 0.9,
+            "top_k": 40,
+            "max_output_tokens": 4096,
+        }
+    )
     resp = model.generate_content(prompt, safety_settings=None)
 
     # Extrae texto desde candidates/parts (sin fallback)
@@ -502,7 +502,6 @@ model = genai.GenerativeModel(
         raise RuntimeError("Gemini respondió sin contenido utilizable (parts vacíos).")
 
     return raw
-
 
 # ========================= SUBIDA / SERVICIOS =========================
 @app.route("/upload", methods=["POST"])
