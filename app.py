@@ -1,4 +1,4 @@
-    # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os, re, csv, json, sqlite3, base64, mimetypes
 from functools import wraps
 from datetime import datetime
@@ -13,6 +13,11 @@ from flask import (
 BASE_DIR = Path(__file__).resolve().parent
 UPLOAD_DIR = BASE_DIR / "uploads" / "audios"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+# --- Zona horaria (SOLO cambio de hora). Por defecto America/Santiago ---
+APP_TZ = os.environ.get("APP_TZ", "America/Santiago")
+def now_tz() -> datetime:
+    return datetime.now(ZoneInfo(APP_TZ))
 
 # Detecta DB existente para NO perder auditorías previas
 _env_db = os.environ.get("DB_PATH", "").strip()
@@ -520,7 +525,7 @@ def upload():
     if not advisor:
         return "Asesor es requerido", 400
 
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    ts = now_tz().strftime("%Y%m%d_%H%M%S")   # ← hora con TZ
     safe_name = re.sub(r"[^\w\.-]+", "_", f.filename)
     filename = f"{ts}_{safe_name}"
     path = UPLOAD_DIR / filename
@@ -539,7 +544,7 @@ def upload():
                             audio_url, detail_3_6_8, advisor_confirmed, uploaded_by)
         VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)
     """, (
-        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        now_tz().strftime("%Y-%m-%d %H:%M:%S"),   # ← hora con TZ
         advisor, campaign, mobile, tipificacion_grouped,
         audio_url, detail_3_6_8, uploaded_by
     ))
@@ -597,8 +602,9 @@ def export_supervisor():
     """)
     rows = [dict(r) for r in cur.fetchall()]; conn.close()
 
-    # Filtra por mes actual
-    now = datetime.now(); ym = f"{now.year}-{str(now.month).zfill(2)}"
+    # Filtra por mes actual (usando TZ)
+    now = now_tz()
+    ym = f"{now.year}-{str(now.month).zfill(2)}"
     rows = [r for r in rows if (r.get("created_at") or "").startswith(ym)]
     if not rows:
         rows = [{
