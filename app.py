@@ -322,13 +322,14 @@ def advisor_dashboard():
 
 # ========================= APIs =========================
 def _filter_allowed_campaigns(rows):
-    allowed = [c.upper() for c in (session.get("allowed_campaigns") or [])]
+    allowed = [ (c or "").strip().upper() for c in (session.get("allowed_campaigns") or []) ]
     if not allowed:
         return rows
     out = []
     for r in rows:
-        camp = (r.get("campaign") or "").upper()
-        if camp in allowed:
+        camp = ((r.get("campaign") or "").strip().upper())
+        # acepta igualdad exacta, prefijo o subcadena
+        if any(camp == a or camp.startswith(a) or (a in camp) for a in allowed):
             out.append(r)
     return out
 
