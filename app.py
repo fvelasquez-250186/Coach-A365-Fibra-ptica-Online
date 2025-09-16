@@ -5,14 +5,14 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 from flask import (
+    Flask, render_template, request, redirect, url_for,
+    session, jsonify, send_from_directory, flash, make_response
+)
+
 # ---- Hora local Lima (Perú) ----
 APP_TZ = ZoneInfo("America/Lima")
 def now_pe():
     return datetime.now(APP_TZ)
-
-    Flask, render_template, request, redirect, url_for,
-    session, jsonify, send_from_directory, flash, make_response
-)
 
 # ========================= RUTAS BASE =========================
 BASE_DIR = Path(__file__).resolve().parent
