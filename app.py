@@ -525,7 +525,7 @@ def upload():
     if not advisor:
         return "Asesor es requerido", 400
 
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    ts = now_pe().strftime("%Y%m%d_%H%M%S")
     safe_name = re.sub(r"[^\w\.-]+", "_", f.filename)
     filename = f"{ts}_{safe_name}"
     path = UPLOAD_DIR / filename
