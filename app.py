@@ -329,7 +329,7 @@ def _filter_allowed_campaigns(rows):
     for r in rows:
         camp = ((r.get("campaign") or "").strip().upper())
         # acepta igualdad exacta, prefijo o subcadena
-        if any(camp == a or camp.startswith(a) or (a in camp) for a in allowed):
+        if any(camp == a or camp.startswith(a) or a.startswith(camp) or (a in camp) or (camp in a) for a in allowed):
             out.append(r)
     return out
 
