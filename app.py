@@ -5,6 +5,11 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 from flask import (
+# ---- Hora local Lima (Perú) ----
+APP_TZ = ZoneInfo("America/Lima")
+def now_pe():
+    return datetime.now(APP_TZ)
+
     Flask, render_template, request, redirect, url_for,
     session, jsonify, send_from_directory, flash, make_response
 )
