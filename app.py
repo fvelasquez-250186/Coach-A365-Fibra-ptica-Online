@@ -37,6 +37,19 @@ DB_PATH = _DB_PICK or (BASE_DIR / "auditorias.db")
 app = Flask(__name__, static_folder="static", template_folder="templates")
 app.secret_key = os.environ.get("FLASK_SECRET", "dev-secret-please-change")
 
+# ========================= B2 CLIENT =========================
+B2_KEY_ID = os.environ.get("B2_KEY_ID")
+B2_APP_KEY = os.environ.get("B2_APPLICATION_KEY")
+B2_BUCKET = os.environ.get("B2_BUCKET_NAME")
+B2_ENDPOINT = os.environ.get("B2_ENDPOINT")
+
+s3_client = boto3.client(
+    "s3",
+    endpoint_url=f"https://{B2_ENDPOINT}",
+    aws_access_key_id=B2_KEY_ID,
+    aws_secret_access_key=B2_APP_KEY,
+)
+
 # ========================= DB HELPERS =========================
 def get_db():
     conn = sqlite3.connect(DB_PATH)
