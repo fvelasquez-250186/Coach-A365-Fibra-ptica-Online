@@ -9,3 +9,6 @@ requests==2.32.3
 gunicorn==22.0.0
 google-generativeai
 boto3
+google-api-python-client
+google-auth
+google-auth-httplib2
