@@ -607,9 +607,14 @@ def upload():
     safe_name = re.sub(r"[^\w\.-]+", "_", f.filename)
     filename = f"{ts}_{safe_name}"
     path = UPLOAD_DIR / filename
-        # Subir a Backblaze B2
-    s3_client.upload_file(str(path), B2_BUCKET, filename)
-    audio_url = f"https://{B2_ENDPOINT}/{B2_BUCKET}/{filename}"
+
+f.save(path) 
+# Subir a Google Drive
+try:
+    f.stream.seek(0)   # por si antes hiciste f.save(path)
+except Exception:
+    pass
+audio_url, drive_file_id = drive_upload_audio(f)
 
     # Transcribe + genera coaching 3/6 (sin fallback)
     transcript = transcribe_audio_gemini(path)
