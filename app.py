@@ -51,9 +51,9 @@ def drive_upload_audio(file_storage):
         fileId=file_id, body={"role": "reader", "type": "anyone"}
     ).execute()
 
-    # URL directa de descarga (si no, la de vista)
-    url = created.get("webContentLink") or created.get("webViewLink")
-    return url, file_id
+# URL reproducible directamente en <audio>
+url = f"https://drive.google.com/uc?export=download&id={file_id}"
+return url, file_id
 
 import boto3
 from botocore.config import Config  # 👈 nuevo import
