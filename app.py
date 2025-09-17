@@ -9,6 +9,7 @@ from flask import (
     session, jsonify, send_from_directory, flash, make_response
 )
 
+import boto3
 # ---- Hora local Lima (Perú) ----
 APP_TZ = ZoneInfo("America/Lima")
 def now_pe():
