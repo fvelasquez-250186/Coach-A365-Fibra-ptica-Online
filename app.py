@@ -623,16 +623,24 @@ audio_url, drive_file_id = drive_upload_audio(f)
 
     # Inserta incluyendo uploaded_by
     conn = get_db(); cur = conn.cursor()
-    cur.execute("""
-        INSERT INTO audits (created_at, advisor, campaign, mobile_number, tipificacion,
-                            audio_url, detail_3_6_8, advisor_confirmed, uploaded_by)
-        VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)
-    """, (
-        now_pe().strftime("%Y-%m-%d %H:%M:%S"),
-        advisor, campaign, mobile, tipificacion_grouped,
-        audio_url, detail_3_6_8, uploaded_by
-    ))
-    conn.commit(); conn.close()
+cur.execute("""
+    INSERT INTO audits (
+        created_at, advisor, campaign, mobile_number, tipificacion,
+        audio_url, detail_3_6_8, advisor_confirmed, uploaded_by
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+""", (
+    now_pe().strftime("%Y-%m-%d %H:%M:%S"),
+    advisor,
+    campaign,
+    mobile_number,
+    tipificacion_grouped,   # usa la misma variable que vienes calculando arriba
+    audio_url,              # <-- URL pública de Google Drive
+    detail_3_6_8,
+    0,
+    (session.get("user_email") or session.get("username") or "sistema")
+))
+conn.commit()
 
     flash("Audio subido y analizado.", "success")
     return ("", 204)
