@@ -569,10 +569,10 @@ def upload():
     flash("Audio subido y analizado.", "success")
     return ("", 204)
 
-@app.route("/uploads/<path:filename>")
-@require_login
-def serve_upload(filename):
-    return send_from_directory(UPLOAD_DIR, filename, as_attachment=False)
+# @app.route("/uploads/<path:filename>")
+# @require_login
+# def serve_upload(filename):
+#     return send_from_directory(UPLOAD_DIR, filename, as_attachment=False)
 
 @app.route("/advisor/confirm/<int:audit_id>", methods=["POST"])
 @require_login
