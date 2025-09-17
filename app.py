@@ -20,6 +20,40 @@ def get_drive_service():
         SERVICE_ACCOUNT_FILE, scopes=SCOPES
     )
     return build("drive", "v3", credentials=creds)
+def drive_upload_audio(file_storage):
+    # imports locales para no tocar más imports arriba
+    from googleapiclient.http import MediaIoBaseUpload
+    from werkzeug.utils import secure_filename
+    import io
+
+    service = get_drive_service()
+
+    # Nombre seguro y único
+    orig = secure_filename(file_storage.filename or "audio.mp3")
+    ts = datetime.now().strftime("%Y%m%d%H%M%S")
+    name = f"{ts}_{orig}"
+
+    # Subir contenido
+    media = MediaIoBaseUpload(
+        file_storage.stream,
+        mimetype=(file_storage.mimetype or "audio/mpeg"),
+        resumable=False
+    )
+    meta = {"name": name}
+    created = service.files().create(
+        body=meta, media_body=media, fields="id,webViewLink,webContentLink"
+    ).execute()
+
+    file_id = created["id"]
+
+    # Hacer accesible con enlace
+    service.permissions().create(
+        fileId=file_id, body={"role": "reader", "type": "anyone"}
+    ).execute()
+
+    # URL directa de descarga (si no, la de vista)
+    url = created.get("webContentLink") or created.get("webViewLink")
+    return url, file_id
 
 import boto3
 from botocore.config import Config  # 👈 nuevo import
