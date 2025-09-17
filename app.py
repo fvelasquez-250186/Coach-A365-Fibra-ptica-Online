@@ -292,8 +292,8 @@ def login():
         session["allowed_campaigns"] = {
             "70105421": ["C2C HOGAR PRIVADO", "WEB HOGAR PRIVADO"],
             "72199613": ["C2C HOGAR PRIVADO", "WEB HOGAR PRIVADO"],
-            "71528928": ["FONOCOMPRAS HOGAR"],
-            "44023703": ["FONOCOMPRAS HOGAR"],
+            "71528928": ["FONOCOMPRAS HOGAR", "FONOCOMPRAS"],  # Chuquizuta
+            "44023703": ["FONOCOMPRAS HOGAR", "FONOCOMPRAS"],  # Alberca
         }.get(dni, [])
         flash(f"¡Bienvenido, {name}!", "success")
         return redirect(url_for("supervisor_dashboard"))
