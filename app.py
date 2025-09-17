@@ -8,6 +8,18 @@ from flask import (
     Flask, render_template, request, redirect, url_for,
     session, jsonify, send_from_directory, flash, make_response
 )
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+
+# === Google Drive (Service Account) ===
+SERVICE_ACCOUNT_FILE = str(Path(__file__).resolve().parent / "credentials" / "coach-a365-drive.json")
+SCOPES = ["https://www.googleapis.com/auth/drive.file"]
+
+def get_drive_service():
+    creds = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE, scopes=SCOPES
+    )
+    return build("drive", "v3", credentials=creds)
 
 import boto3
 from botocore.config import Config  # 👈 nuevo import
