@@ -10,6 +10,23 @@ from flask import (
 )
 
 import boto3
+from botocore.config import Config  # 👈 nuevo import
+
+# --- Cliente S3 (Backblaze B2) ---
+B2_ENDPOINT = os.environ.get("B2_ENDPOINT", "").strip()
+B2_KEY_ID = os.environ.get("B2_KEY_ID", "").strip()
+B2_APP_KEY = os.environ.get("B2_APP_KEY", "").strip()
+B2_BUCKET = os.environ.get("B2_BUCKET_NAME", "").strip()
+
+s3_client = boto3.client(
+    "s3",
+    endpoint_url=f"https://{B2_ENDPOINT}",
+    aws_access_key_id=B2_KEY_ID,
+    aws_secret_access_key=B2_APP_KEY,
+    region_name="us-west-004",
+    config=Config(s3={"addressing_style": "path"}, signature_version="s3v4"),
+)
+
 # ---- Hora local Lima (Perú) ----
 APP_TZ = ZoneInfo("America/Lima")
 def now_pe():
